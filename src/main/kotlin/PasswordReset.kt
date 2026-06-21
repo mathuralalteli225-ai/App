@@ -1,22 +1,30 @@
 package auth
 
 /**
- * Simple password reset helpers.
- * Note: these are basic examples — consider adding proper validation,
- * email sending, and secure password handling for production use.
+ * See My Password — Simple password reset helpers.
+ *
+ * Note: These are minimal examples — add proper validation, secure OTP/reset links,
+ * password hashing and secure storage before using in production.
  */
+
+private val EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$".toRegex()
+
 fun requestPasswordReset(email: String): String {
-    return if (email.contains("@") && email.contains(".")) {
+    return if (EMAIL_REGEX.matches(email)) {
+        // TODO: generate OTP/reset link and send via email
         "Reset link/OTP sent to $email"
     } else {
         "Please enter a valid email"
     }
 }
 
-fun resetPassword(newPassword: String): String {
-    return if (newPassword.length >= 8) {
-        "Password changed successfully"
-    } else {
-        "Password must be at least 8 characters"
+fun resetPassword(newPassword: String, confirmPassword: String = newPassword): String {
+    if (newPassword != confirmPassword) {
+        return "Passwords do not match"
     }
+    if (newPassword.length < 8) {
+        return "Password must be at least 8 characters"
+    }
+    // TODO: hash the password and persist securely
+    return "Password changed successfully"
 }
